@@ -1,0 +1,5 @@
+M-x package-refresh-contents
+M-x package-install RET evil
+M-x package-install RET org-bullets
+M-x package-install RET org-evil
+M-x package-install RET rainbow-delimiters

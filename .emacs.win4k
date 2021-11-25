@@ -1,0 +1,421 @@
+; the official .emacs begins here.
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(auto-compression-mode t nil (jka-compr))
+ '(case-fold-search t)
+ '(column-number-mode t)
+ '(current-language-environment "Korean")
+ '(default-input-method "korean-hangul")
+ '(global-font-lock-mode t nil (font-lock))
+ '(inhibit-startup-screen t)
+ '(package-selected-packages
+   '(undo-fu evil-visual-mark-mode org-evil org-superstar org-bullets evil))
+ '(scroll-bar-mode 'right)
+ '(transient-mark-mode t))
+; '(default ((t (:inherit nil :stipple nil :background "blue4" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 96 :width normal :foundry "misc" :family "fixed")))))
+
+;; Added by Soochang Choe to enable Verilog Mode
+(defun prepend-path ( my-path )
+(setq load-path (cons (expand-file-name my-path) load-path)))
+(defun append-path ( my-path )
+(setq load-path (append load-path (list (expand-file-name my-path)))))
+;; Look first in the directory ~/elisp for elisp files
+(prepend-path "C:/Users/class/.emacs.d/emacs_lisp/ELISP")
+
+;; Load verilog mode only when needed
+(autoload 'verilog-mode "verilog-mode" "Verilog mode" t)
+;; Load skill mode only when needed
+(autoload 'skill-mode "skill-mode" "Skill mode" t)
+;; Any files that end in .v should be in verilog mode
+(setq auto-mode-alist (cons '("\\.v\\'" . verilog-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.va\\'" . verilog-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.vams\\'" . verilog-mode) auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.[ds]?vh?\\'" . verilog-mode))
+(setq auto-mode-alist (cons '("\\.il\\'" . skill-mode) auto-mode-alist))
+;; Any files in verilog mode should have their keywords colorized
+(add-hook 'verilog-mode-hook '(lambda () (font-lock-mode 1)))
+
+;; Add paths for color theme
+(append-path "C:/Users/class/.emacs.d/emacs_lisp/ELISP/color-theme-6.6.0")
+(append-path "C:/Users/class/.emacs.d/emacs_lisp/ELISP/color-theme-6.6.0/themes")
+
+(setq-default transient-mark-mode t)   ; make mark appear
+(setq case-fold-search t)              ; make searches case insensitive
+; (setq case-fold-search nil)           ; make searches case sensitive
+(setq-default indent-tabs-mode nil)    ; force emacs use spaces in stead of tabs
+(setq default-tab-width 4)	       ; set tab width
+(add-hook 'python-mode-hook            ; set tab width to 4 when in python-mode
+    (function (lambda () (setq default-tab-width 4))))
+
+(put 'narrow-to-region 'disabled nil)  ; narrow-to-region is on
+(setq make-backup-files t)
+(setq auto-save-mode    t)
+;(setq-default truncate-lines t)
+;;(set-default-font "-adobe-courier-medium-r-normal--18-180-75-75-m-110-iso8859-1")
+;(set-default-font "-adobe-courier-medium-r-normal--14-100-100-100-m-90-iso8859-1")
+;(setq default-frame-alist '((font . "-font-name-from-xfontsel")))
+;(set-default-font "8x13")
+;(set-default-font "9x15")
+;(set-default-font "lucidasanstypewriter-14")
+;(set-default-font "lucidasanstypewriter-12")
+
+;;; Text mode and Auto Fill mode
+; The next three lines put Emacs into Text mode
+; and Auto Fill mode, and are for writers who
+; want to start writing prose rather than code.
+;(setq default-major-mode 'text-mode)
+;(add-hook 'text-mode-hook 'text-mode-hook-identify)
+;(add-hook 'text-mode-hook 'turn-on-auto-fill)
+;(setq colon-double-space t)
+
+; auto-indent
+(define-key global-map (kbd "RET") 'newline-and-indent)
+
+; line-by-line scroll
+(setq scroll-step 1)
+
+;; kill trailing white space on save
+(autoload 'delete-trailing-whitespace "whitespace" nil t)
+(add-hook 'write-file-hooks 'delete-trailing-whitespace)
+;(setq-default show-trailing-whitespace t)
+
+; interactive commands
+; (prin1-to-string (x-list-fonts "*"))
+; sh> xfontsel
+;
+
+;; Installing color-theme
+; M-x color-theme-select
+(if window-system (progn
+                    (require 'color-theme)
+                    (autoload 'color-theme-word-perfect "color-theme-library" nil t)
+                    (color-theme-word-perfect)))
+;(set-face-font 'menu "7x14")
+(set-face-foreground 'menu "black")
+
+;;;
+;;; ediff configuration
+;;;
+
+;; Whitespace and case insensitivity
+(setq ediff-diff-options "-w")
+;; usage: emacs -diff file1 file2
+(defun command-line-diff (switch)
+  (let ((file1 (pop command-line-args-left))
+        (file2 (pop command-line-args-left)))
+    (ediff file1 file2)))
+(add-to-list 'command-switch-alist '("-diff" . command-line-diff))
+;; This is what you probably want if you are using a titing window
+;; manager under X, such as ratpoison.
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(setq ediff-split-window-function (lambda (&optional arg)
+                                    (if (> (frame-width) 150)
+                                      (split-window-horizontally arg)
+                                      (split-window-vertically arg))))
+;; Some custom configuration to ediff
+(defvar my-ediff-bwin-config nil "Window configuration before ediff.")
+(defcustom my-ediff-bwin-reg ?b
+           "*Register to be set up to hold `my-ediff-bwin-config'
+configuration.")
+
+(defvar my-ediff-bwin-config nil "Window configuration after ediff.")
+(defcustom my-ediff-bwin-reg ?e
+           "*Register to be used up to hold `my-ediff-bwin-config'
+configuration.")
+
+(defun my-ediff-bsh ()
+  "Function to be called before any buffers or window setup for ediff."
+  (setq my-ediff-bwin-config (current-window-configuration))
+  (when (characterp my-ediff-bwin-reg)
+    (set-register my-ediff-bwin-reg
+                  (list my-ediff-bwin-config (point-marker)))))
+
+(defun my-ediff-ash ()
+  "Function to be called after buffers and window setup for ediff."
+  (setq my-ediff-awin-config (current-window-configuration))
+  (when (characterp my-ediff-awin-reg)
+    (set-register my-ediff-awin-reg
+                  (list my-ediff-awin-config (point-marker)))))
+
+(defun my-ediff_qh ()
+  "Function to be called when ediff quits."
+  (when my-ediff-bwin-config
+    (set-window-configuration my-ediff-bwin-config)))
+
+(add-hook 'ediff-before-setup-hook 'my-ediff-bsh)
+(add-hook 'ediff-after-setup-hook 'my-ediff-ash 'append)
+(add-hook 'ediff-quit-hook 'my-ediff-qh)
+
+(put 'upcase-region 'disabled nil)
+
+;; kill-whole-line
+(defun kill-whole-line nil
+  "kills the entire line on which the cursor is located, and places the
+cursor as close to its previous position as possible."
+  (interactive)
+  (progn
+    (let ((y (current-column))
+          (a (progn (beginning-of-line) (point)))
+          (b (progn (forward-line 1) (point))))
+       (kill-region a b)
+       (move-to-column y))))
+(global-set-key (kbd "<C-S-backspace>") 'kill-whole-line)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(fixed-pitch ((t (:family "Consolas" :slant normal :weight normal :height 0.9 :width normal))))
+ '(org-block ((t (:inherit fixed-pitch))))
+ '(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+ '(org-ellipsis ((t (:foreground "cyan" :underline nil))))
+ '(org-property-value ((t (:inherit fixed-pitch))) t)
+ '(org-special-keyword ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+ '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold))))
+ '(org-verbatim ((t (:inherit (shadow fixed-pitch)))))
+ '(rainbow-delimiters-depth-1-face ((t (:inherit rainbow-delimiters-base-face :foreground "yellow"))))
+ '(rainbow-delimiters-depth-2-face ((t (:inherit rainbow-delimiters-base-face :foreground "dark orange"))))
+ '(rainbow-delimiters-depth-3-face ((t (:inherit rainbow-delimiters-base-face :foreground "medium spring green"))))
+ '(rainbow-delimiters-depth-4-face ((t (:inherit rainbow-delimiters-base-face :foreground "deep sky blue"))))
+ '(rainbow-delimiters-depth-5-face ((t (:inherit rainbow-delimiters-base-face :foreground "magenta"))))
+ '(rainbow-delimiters-depth-6-face ((t (:inherit rainbow-delimiters-base-face :foreground "dark violet"))))
+ '(rainbow-delimiters-depth-7-face ((t (:inherit rainbow-delimiters-base-face :foreground "salmon"))))
+ '(rainbow-delimiters-depth-8-face ((t (:inherit rainbow-delimiters-base-face :foreground "red"))))
+ '(rainbow-delimiters-depth-9-face ((t (:inherit rainbow-delimiters-base-face :foreground "orange"))))
+ '(variable-pitch ((t (:family "Source Sans Pro" :height 120 :weight light)))))
+
+(global-set-key "\C-l" 'goto-line)
+; Goto line like in XEmacs:
+(define-key global-map (kbd "M-g") 'ffap)
+; show absolute file name with full path
+(defun show-file-name ()
+    "Show the full path file name in the minibuffer."
+    (interactive)
+    (message (buffer-file-name))
+    (kill-new (file-truename buffer-file-name))
+)
+;(global-set-key [C-f1] 'show-file-name)
+(global-set-key (kbd "<f2>") 'show-file-name)
+
+; Hiding hidden files in emacs dired
+; You can then toggle the view with dired-omit-mode (M-o by default).
+(require 'dired-x)
+(setq dired-omit-files "^\\...+$")
+(if window-system (add-hook 'dired-mode-hook (lambda () (dired-omit-mode 1))))
+
+;; prep for installing additional packages via emacs
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(package-initialize)
+
+; M-x package-refresh-contents
+; M-x package-install RET evil
+; evil mode
+(require 'evil)
+(evil-mode 1)
+;; The following line was added to make sure <TAB> works in terminal mode(-nw)
+(add-hook 'org-mode-hook
+          (lambda ()
+          (define-key evil-normal-state-map (kbd "TAB") 'org-cycle)))
+
+; Toggle input method
+;(defun evil-toggle-input-method ()
+;    "when toggle on input method, switch to evil-insert-state if possible.
+;when toggle off input method, switch to evil-normal-state if current state is evil-insert-state"
+;    (interactive)
+;    (if (not current-input-method)
+;        (if (not (string= evil-state "insert"))
+;            (evil-insert-state))
+;    (if (string= evil-state "insert")
+;        (evil-normal-state)
+;        ))
+;    (toggle-input-method))
+;
+;(global-set-key (kbd "C-\\") 'evil-toggle-input-method)
+
+; adjust emacs size
+(defun set-frame-size-according-to-resolution ()
+(interactive)
+(if window-system
+    (progn
+        ;; use 120 char wide window for largeish displays
+        ;; and smaller 80 column windows for smaller displays
+        ;; pick whatever numbers make sense for you
+        (if (> (x-display-pixel-width) 1280)
+            (add-to-list 'default-frame-alist (cons 'width 100))
+        (add-to-list 'default-frame-alist (cons 'width 80)))
+        ;; for the height, subtract a couple hundred pixels
+        ;; from the screen height (for panels, menubars and
+        ;; whatnot), then divide by the height of a char to
+        ;; get the height we want
+        (add-to-list 'default-frame-alist
+                    (cons 'height (/ (- (x-display-pixel-height) 1000)
+                                    (frame-char-height)))))))
+
+(set-frame-size-according-to-resolution)
+
+
+; line numbers
+;(global-display-line-numbers-mode)
+;;(global-linum-mode) ;this is for the old version
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+
+;; org-mode configuration
+; M-x package-refresh-contents
+; M-x package-install RET org-bullets
+(require 'org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+(add-hook 'org-mode-hook (lambda () (visual-line-mode)))
+;; (add-hook 'org-mode-hook
+;;          (lambda ()
+;;            (variable-pitch-mode 1)
+;;            (visual-line-mode)))
+; Aesthetics
+(setq org-startup-folded t)
+;(setq org-startup-indented t)
+(setq org-startup-indented t
+      org-src-tab-acts-natively t)
+;(setq org-startup-with-inline-images t)
+
+(when (member "Symbola" (font-family-list))
+  (set-fontset-font "fontset-default" nil
+                    (font-spec :size 40 :name "Symbola")))
+(when (member "Symbola" (font-family-list))
+  (set-fontset-font t 'unicode "Symbola" nil 'prepend))
+
+(prefer-coding-system       'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(setq default-buffer-file-coding-system 'utf-8)
+
+; M-x customize-face org-ellipsis
+(setq org-ellipsis "⤵")
+(setq org-cycle-separator-lines -1)
+
+;(setq org-bullets-bullet-list '("◉" "☯" "○" "☯" "✸" "☯" "✿" "☯" "✜" "☯" "◆" "☯" "▶"))
+(setq org-bullets-bullet-list '("◉" "○" "✸" "✿" "✜" "◆" "▶"))
+(org-indent-mode 1)
+(dolist (face '((org-level-1 . 1.2)
+                (org-level-2 . 1.1)
+                (org-level-2 . 1.05)
+                (org-level-2 . 1.0)
+                (org-level-2 . 1.1)
+                (org-level-2 . 1.1)
+                (org-level-2 . 1.1)
+                (org-level-2 . 1.1)))
+  (set-face-attribute (car face) nil :font "Arial" :weight 'regular :height (cdr face)))
+
+
+(setq org-hide-emphasis-markers t
+      org-fontify-done-headline t
+      org-hide-leading-stars t
+      org-pretty-entities t
+      org-odd-levels-only nil)
+
+(setq org-list-demote-modify-bullet
+      (quote (("+" . "-")
+              ("-" . "+")
+              ("*" . "-")
+              ("1." . "-")
+              ("1)" . "-")
+              ("A)" . "-")
+              ("B)" . "-")
+              ("a)" . "-")
+              ("b)" . "-")
+              ("A." . "-")
+              ("B." . "-")
+              ("a." . "-")
+              ("b." . "-"))))
+
+(font-lock-add-keywords 'org-mode
+                        '(("^ *\\([-]\\) "
+                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+(font-lock-add-keywords 'org-mode
+                        '(("^ *\\([+]\\) "
+                           (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "◦"))))))
+
+
+(setq-default prettify-symbols-alist '(("#+BEGIN_SRC" . "†")
+                                       ("#+END_SRC" . "†")
+                                       ("#+begin_src" . "†")
+                                       ("#+end_src" . "†")
+                                       (">=" . "≥")
+                                       ("=>" . "⇨")))
+(setq prettify-symbols-unprettify-at-point 'right-edge)
+(add-hook 'org-mode-hook 'prettify-symbols-mode)
+
+;(custom-theme-set-faces
+ ;'user
+ ;'(variable-pitch ((t (:family "Source Sans Pro" :height 120 :weight light))))
+ ;'(fixed-pitch ((t ( :family "Consolas" :slant normal :weight normal :height 0.9 :width normal)))))
+;
+;(custom-theme-set-faces
+ ;'user
+ ;'(org-block                 ((t (:inherit fixed-pitch))))
+ ;'(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+ ;'(org-property-value        ((t (:inherit fixed-pitch))) t)
+ ;'(org-special-keyword       ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+ ;'(org-tag                   ((t (:inherit (shadow fixed-pitch) :weight bold))))
+ ;'(org-verbatim              ((t (:inherit (shadow fixed-pitch))))))
+
+;(on-platform-do
+; ((windows cygwin) (set-face-attribute 'default nil :font "Fira Mono:antialias=subpixel" :height 130))
+; (osx (set-face-attribute 'default nil :font "Fira Mono" :height 170))
+; (linux (set-face-attribute 'default nil :font "Monospace" :height 100)))
+(if window-system (set-face-attribute 'default nil :font "Consolas" :height 110))
+
+;; Set the fixed pitch face
+(if window-system (set-face-attribute 'fixed-pitch nil :font "Consolas" :height 110))
+;(set-face-attribute 'fixed-pitch nil :font "Fira Code Retina" :height 260)
+
+;; Set the variable pitch face
+(if window-system (set-face-attribute 'variable-pitch nil :font "Arial" :height 110 :weight 'regular))
+
+(set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+(set-face-attribute 'org-code nil :inherit '(shadow fixed-pitch))
+(set-face-attribute 'org-table nil :inherit '(shadow fixed-pitch))
+(set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+(set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+(set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+(set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+
+; org-superstar
+; need to execute M-x package-install RET org-superstar
+;(require 'org-superstar)
+;(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+
+; org-evil
+; M-x package-refresh-contents
+; need to execute M-x package-install RET org-evil
+(require 'org-evil)
+
+; undo-fu
+;(require 'undo-fu)
+;(define-key evil-normal-state-map "u" 'undo-fu-only-undo)
+;(define-key evil-normal-state-map "\C-r" 'undo-fu-only-redo)
+
+; internal redo
+; C-g u in evil-mode
+
+; To install rainbow-delimiters
+; M-x package-refresh-contents
+; M-x package-install RET rainbow-delimiters RET
+; To customize parentheses colors:
+; M-x customize-group rainbow-delimiters
+(show-paren-mode 1)
+(add-hook 'foo-mode-hook #'rainbow-delimiters-mode)
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+;(add-hook 'org-mode-hook #'rainbow-delimiters-mode)
+
+;; no word wrap for prog-mode
+(global-set-key (kbd "C-c w") 'toggle-truncate-lines)
+(add-hook 'prog-mode-hook 'toggle-truncate-lines)
+
+;; a way to reload a file is C-x C-f when the file is being updated by the file system.
+;; If you want it to happen automatically, use the following command.
+;; (global-auto-revert-mode)
+(global-auto-revert-mode)
