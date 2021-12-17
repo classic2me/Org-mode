@@ -25,7 +25,7 @@
         C-x u           undo
         C-_             undo
         C-/             undo
-        C-g u           redo in evil-mode
+        C-r             redo in evil-mode
         C-u C-/         undo within region
         C-h             help
         C-h i           view Emacs manual
@@ -222,7 +222,7 @@
         M-<UP>          move the block up
         M-<DOWN>        move the block up
         C-c ^           M-x org-sort
-        C-g u           redo in evil-mode
+        C-r             redo in evil-mode
 
 [ M-x ]
         M-x calculator
