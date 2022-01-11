@@ -221,6 +221,8 @@
 [ DIRED ]
         C-x d           enter dired mode
         gr              refresh the dired window
+        C-c C-c         toggle between DocView and the underlying text with ps files
+        C-c C-t         return to the underlying text with ps files
 
 [ org-mode ]
         M-<UP>          move the block up
