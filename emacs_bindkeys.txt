@@ -225,6 +225,9 @@
         C-c C-t         return to the underlying text with ps files
 
 [ org-mode ]
+        C-c C-c         toggle checkbox status
+        M-S-RET         insert a new item with a checkbox
+        C-c #           update the statistics cookie in the current outline entry
         M-<UP>          move the block up
         M-<DOWN>        move the block up
         C-c ^           M-x org-sort
