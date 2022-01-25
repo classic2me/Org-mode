@@ -232,6 +232,8 @@
         M-<DOWN>        move the block up
         C-c ^           M-x org-sort
         C-r             redo in evil-mode
+        M-x org-num-mode
+                        activate the dynamic numbering of headlines
 
 [ M-x ]
         M-x calculator
