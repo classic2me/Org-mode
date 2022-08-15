@@ -278,6 +278,7 @@
         M-x doc-view               View pdf files
         M-x lisp-interaction-mode  Pressing C-j will feed the s-expression before the cursor
         M-x ielm                   Bring up a real ELISP termnial
+        M-x comment-region         comment out or uncommen each line in the region
 
 [ INFO/HELP ]
         C-h i           enter 'Emacs info'
