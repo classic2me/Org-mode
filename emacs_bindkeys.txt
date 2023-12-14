@@ -300,3 +300,5 @@
         ?               help
         m               wide display
         !               update diff regions
+[ MISC ]
+        c-h v           describe variable (see the value of a variable)
