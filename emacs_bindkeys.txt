@@ -101,6 +101,7 @@
         M-u             upcase-word
         C-x i           insert file
         C-x z           repeat
+        C-x C-;         comment out or uncomment single or multiple lines
         C-x RET f unix  dos to unix
         C-x RET f dos   unix to dos
         M-x revert-buffer   undo all changes since last save
