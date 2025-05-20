@@ -244,7 +244,9 @@
         M-x tetris
         M-x hanoi
         M-x doctor
-        M-x visual-line-mode       Line wrapping in this buffer    
+        M-x visual-line-mode       Line wrapping in this buffer
+        M-x lisp-mode
+        M-x emacs-lisp-mode
         M-x java-mode
         M-x python-mode
         M-x text-mode
