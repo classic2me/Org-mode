@@ -25,6 +25,7 @@
         C-x u           undo
         C-_             undo
         C-/             undo
+        u               undo in evil-mode
         C-r             redo in evil-mode
         C-u C-/         undo within region
         C-h             help
