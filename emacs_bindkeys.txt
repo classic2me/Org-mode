@@ -16,7 +16,7 @@
         M-~             make it not-modified without saving
         C-x C-c         quit Emacs
         C-x z ...       repeat the last command
-        M-:             buffer-file-name
+        M-:             buffer-file-name (this shows the full path)
         C-F1            show and put absolute file name into OS's clipboard
         C-x C-v         reload a file
 
